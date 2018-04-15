@@ -33,10 +33,12 @@ void print_position(const Position& position, time_point start) {
 
 void run_vr_thread(time_point start) {
     try {
+        RatePrinter printer("VR");
         VrPosition vr;
 
         while (true) {
             const auto position = vr.get_position();
+            printer.record_event();
             print_position(position, start);
         }
     } catch (std::exception& e) {
