@@ -4,6 +4,7 @@
 #include <mutex>
 #include <unordered_map>
 #include <functional>
+#include <memory>
 
 #include "position.h"
 #include "vr_position.h"
@@ -45,15 +46,16 @@ void run_vr_thread(time_point start) {
 
 void run_pozyx_thread(const char* print_positions_path, time_point start) {
     PozyxPosition pozyx(print_positions_path);
-    std::unordered_map<std::string, RatePrinter> rate_printers;
+    std::unordered_map<std::string, std::shared_ptr<RatePrinter>> rate_printers;
 
     while (true) {
         const auto position = pozyx.get_position();
         // Create rate printer if none exists
         if (rate_printers.find(position.source) == rate_printers.end()) {
-            rate_printers.emplace(position.source, position.source);
+            rate_printers.insert(std::make_pair(position.source,
+                std::make_shared<RatePrinter>(position.source)));
         }
-        rate_printers.at(position.source).record_event();
+        rate_printers.at(position.source)->record_event();
         print_position(position, start);
     }
 }
