@@ -40,6 +40,8 @@ void run_vr_thread(time_point start) {
             const auto position = vr.get_position();
             printer.record_event();
             print_position(position, start);
+            // Wait to prevent excessive disk space usage
+            std::this_thread::sleep_for(std::chrono::microseconds(500));
         }
     } catch (std::exception& e) {
         std::cerr << "VR failed: " << e.what() << '\n';
