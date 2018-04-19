@@ -20,6 +20,12 @@ PozyxPosition::PozyxPosition(const char* print_positions_path) {
     if (!_child) {
         throw_errno("failed to start Python subprocess");
     }
+    // Switch to line-buffered mode to prevent many lines from getting
+    // stuck in buffers and delayed
+    const auto buffer_status = std::setvbuf(_child, nullptr, _IOLBF, 128);
+    if (buffer_status != 0) {
+        throw_errno("Failed to set child stdout line-buffered");
+    }
 }
 
 Position PozyxPosition::get_position() {
