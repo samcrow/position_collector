@@ -84,6 +84,9 @@ class ValueMap(object):
         time_values = [tv[0] for tv in tuple_array]
         data_values = [tv[1] for tv in tuple_array]
         return time_values, data_values
+    axes[0].set_title('X values')
+    axes[1].set_title('Y values')
+    axes[2].set_title('Z values')
 
 if __name__ == "__main__":
     main()
