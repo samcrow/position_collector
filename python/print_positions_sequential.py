@@ -25,20 +25,24 @@ def main():
     # List of (ID, PozyxSerial)
     pozyxes = []
     for port in serial_ports:
-        pozyx = PozyxLocalize(serial_port.device, anchors.ANCHORS)
+        pozyx = PozyxLocalize(port.device, anchors.ANCHORS)
         pozyx_id = pozyx.getId()
-        pozyxes.apend((pozyx_id, pozyx))
+        pozyxes.append((pozyx_id, pozyx))
     try:
-        for pozyx_id, pozyx in pozyxes:
-            position = pozyx.getPosition();
-            x_meters = position.x / 1000.0
-            y_meters = position.y / 1000.0
-            z_meters = position.z / 1000.0
-            try:
-                print('{:x},{},{},{}'.format(pozyx_id, x_meters, y_meters, z_meters))
-            except IOError:
-                # Probably a broken pipe
-                return
+        while True:
+            for pozyx_id, pozyx in pozyxes:
+                try:
+                    position = pozyx.getPosition();
+                    x_meters = position.x / 1000.0
+                    y_meters = position.y / 1000.0
+                    z_meters = position.z / 1000.0
+                    print('{:x},{},{},{}'.format(pozyx_id, x_meters, y_meters, z_meters))
+                except IOError:
+                    # Probably a broken pipe
+                    return
+                except RuntimeError as e:
+                    # Print and ignore
+                    sys.stderr.write(str(e) + '\n')
 
     except KeyboardInterrupt:
         return
