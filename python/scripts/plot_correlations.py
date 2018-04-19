@@ -6,6 +6,7 @@ Usage: plot_correlations.py csv-file
 """
 
 import sys
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -16,7 +17,6 @@ def main():
     csv_path = sys.argv[1]
 
     # Create plot
-    figure = plt.figure()
     figure, axes = plt.subplots(3, 1)
 
     # Data for figures
@@ -49,7 +49,6 @@ def main():
     for source in x_values.sources():
         t, x = x_values.data_for_source(source)
         axes[0].plot(t, x)
-        print(axes[0])
     for source in y_values.sources():
         t, y = y_values.data_for_source(source)
         axes[1].plot(t, y)
@@ -57,9 +56,15 @@ def main():
         t, z = z_values.data_for_source(source)
         axes[2].plot(t, z)
 
+    # Labels
+    axes[0].set_title('X values')
+    axes[1].set_title('Y values')
+    axes[2].set_title('Z values')
+    for axis in axes:
+        axis.set_xlabel('Seconds')
+        axis.set_ylabel('Position (meters)')
 
-    figure.show()
-    raw_input()
+    plt.show()
 
 # Maps from a source string to an array of time/value tuples
 class ValueMap(object):
