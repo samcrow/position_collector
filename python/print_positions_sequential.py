@@ -55,7 +55,6 @@ def get_pozyx_serial_ports():
 # Replaces sys.stdout with an object that allows unbuffered writes
 def make_stdout_unbuffered():
     unbuffered = os.fdopen(sys.stdout.fileno(), 'w', 0)
-    sys.stdout.close()
     sys.stdout = unbuffered
 
 if __name__ == "__main__":

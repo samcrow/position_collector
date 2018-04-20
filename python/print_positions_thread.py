@@ -70,7 +70,6 @@ def pozyx_thread(serial_port, print_lock, stop_event):
 # Replaces sys.stdout with an object that allows unbuffered writes
 def make_stdout_unbuffered():
     unbuffered = os.fdopen(sys.stdout.fileno(), 'w', 0)
-    sys.stdout.close()
     sys.stdout = unbuffered
 
 def get_pozyx_serial_ports():
