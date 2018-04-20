@@ -11,12 +11,14 @@ tag ID (hexadecimal) , x (meters), y (meters), z (meters) \n
 
 import threading
 import sys
+import os
 import time
 from pypozyx import *
 from pozyx_localize import PozyxLocalize
 import anchors
 
 def main():
+    make_stdout_unbuffered()
     serial_ports = get_pozyx_serial_ports()
 
     if len(serial_ports) == 0:
@@ -56,7 +58,7 @@ def pozyx_thread(serial_port, print_lock, stop_event):
             z_meters = position.z / 1000.0
             try:
                 print_lock.acquire()
-                print('{:x},{},{},{}'.format(pozyx_id, x_meters, y_meters, z_meters))
+                sys.stdout.write('{:x},{},{},{}'.format(pozyx_id, x_meters, y_meters, z_meters))
             except IOError:
                 # Probably a broken pipe
                 return
@@ -65,6 +67,11 @@ def pozyx_thread(serial_port, print_lock, stop_event):
         except RuntimeError:
             pass
 
+# Replaces sys.stdout with an object that allows unbuffered writes
+def make_stdout_unbuffered():
+    unbuffered = os.fdopen(sys.stdout.fileno(), 'w', 0)
+    sys.stdout.close()
+    sys.stdout = unbuffered
 
 def get_pozyx_serial_ports():
     all_ports = get_serial_ports()
