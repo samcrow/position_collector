@@ -1,4 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python -u
+
+# The -u above makes output unbuffered, which is important.
 
 """
 Connects over USB/serial to all connected POZYX devices, finds the positions
@@ -17,7 +19,6 @@ from pozyx_localize import PozyxLocalize
 import anchors
 
 def main():
-    make_stdout_unbuffered()
     serial_ports = get_pozyx_serial_ports()
 
     if len(serial_ports) == 0:
@@ -37,7 +38,7 @@ def main():
                     x_meters = position.x / 1000.0
                     y_meters = position.y / 1000.0
                     z_meters = position.z / 1000.0
-                    sys.stdout.write('{:x},{},{},{}'.format(pozyx_id, x_meters, y_meters, z_meters))
+                    print('{:x},{},{},{}'.format(pozyx_id, x_meters, y_meters, z_meters))
                 except IOError:
                     # Probably a broken pipe
                     return
@@ -51,11 +52,6 @@ def main():
 def get_pozyx_serial_ports():
     all_ports = get_serial_ports()
     return [port for port in all_ports if is_pozyx_port(port)]
-
-# Replaces sys.stdout with an object that allows unbuffered writes
-def make_stdout_unbuffered():
-    unbuffered = os.fdopen(sys.stdout.fileno(), 'w', 0)
-    sys.stdout = unbuffered
 
 if __name__ == "__main__":
     main()
