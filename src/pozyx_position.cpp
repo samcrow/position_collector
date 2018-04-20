@@ -3,6 +3,7 @@
 #include <array>
 #include <chrono>
 #include <iostream>
+#include <sstream>
 
 namespace {
 /**
@@ -16,7 +17,10 @@ void throw_errno(const std::string& message) {
 }
 
 PozyxPosition::PozyxPosition(const char* print_positions_path) {
-    _child = ::popen(print_positions_path, "r");
+    std::stringstream command_stream;
+    command_stream << "python -u " << print_positions_path;
+    const auto command = command_stream.str();
+    _child = ::popen(command.c_str(), "r");
     if (!_child) {
         throw_errno("failed to start Python subprocess");
     }

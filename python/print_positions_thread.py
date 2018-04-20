@@ -1,6 +1,4 @@
-#!/usr/bin/env python -u
-
-# The -u above makes output unbuffered, which is important.
+#!/usr/bin/env python
 
 """
 Connects over USB/serial to all connected POZYX devices, finds the positions
